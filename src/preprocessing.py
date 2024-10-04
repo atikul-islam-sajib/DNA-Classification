@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 sys.path.append("./src")
 
-from utils import single_nucleosides
+from utils import single_nucleosides, di_nucleosides
 
 
 class Preprocessing():
@@ -31,6 +31,21 @@ class Preprocessing():
             print(self.dataset.isnull().sum().sum())
             print(self.dataset.shape)
             print(self.dataset.head())
+
+        if "di" in self.approaches:
+            for instance in tqdm(range(self.dataset[0:100].shape[0])):
+                for nucleoside in di_nucleosides:
+                    for index in range(len(self.dataset.loc[instance, "sequence"]) - 1):
+                        if nucleoside == self.dataset.loc[instance, "sequence"][index : index + 2]:
+                            self.dataset[str(instance)+"_di_nucleoside"] = 1
+                        else:
+                            self.dataset[str(instance)+"_di_nucleoside"] = 0
+                            
+            print(self.dataset.isnull().sum().sum())
+            print(self.dataset.shape)
+            print(self.dataset.head())
+            
+        
                             
                     
                     
