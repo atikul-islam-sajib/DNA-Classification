@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 sys.path.append("./src")
 
-from utils import single_nucleosides, di_nucleosides, tri_nucleosides
+from utils import single_nucleosides, di_nucleosides, tri_nucleosides, tetra_nucleosides
 
 
 class Preprocessing():
@@ -27,10 +27,6 @@ class Preprocessing():
                             self.dataset[str(instance)+"_single_nucleoside"] = 1
                         else:
                             self.dataset[str(instance)+"_single_nucleoside"] = 0
-                            
-            print(self.dataset.isnull().sum().sum())
-            print(self.dataset.shape)
-            print(self.dataset.head())
 
         if "di" in self.approaches:
             for instance in tqdm(range(self.dataset[0:100].shape[0])):
@@ -41,15 +37,25 @@ class Preprocessing():
                         else:
                             self.dataset[str(instance)+"_di_nucleoside"] = 0
                             
-            print(self.dataset.isnull().sum().sum())
-            print(self.dataset.shape)
-            print(self.dataset.head())
             
         if "tri" in self.approaches:
             for instance in tqdm(range(self.dataset[0:100].shape[0])):
                 for nucleoside in tri_nucleosides:
                     for index in range(len(self.dataset.loc[instance, "sequence"]) - 2):
                         if nucleoside == self.dataset.loc[instance, "sequence"][index : index + 3]:
+                            self.dataset[str(instance)+"_tri_nucleoside"] = 1
+                        else:
+                            self.dataset[str(instance)+"_tri_nucleoside"] = 0
+                            
+            print(self.dataset.isnull().sum().sum())
+            print(self.dataset.shape)
+            print(self.dataset.head())
+            
+        if "tetra" in self.approaches:
+            for instance in tqdm(range(self.dataset[0:100].shape[0])):
+                for nucleoside in tetra_nucleosides:
+                    for index in range(len(self.dataset.loc[instance, "sequence"]) - 3):
+                        if nucleoside == self.dataset.loc[instance, "sequence"][index : index + 4]:
                             self.dataset[str(instance)+"_tri_nucleoside"] = 1
                         else:
                             self.dataset[str(instance)+"_tri_nucleoside"] = 0
