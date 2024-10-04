@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
+warnings.filterwarnings("ignore")
+
 sys.path.append("./src")
 
 from utils import single_nucleosides, di_nucleosides, tri_nucleosides, tetra_nucleosides
@@ -28,7 +30,7 @@ class Preprocessing:
                         else:
                             self.dataset[str(instance) + "_single_nucleoside"] = 0
 
-        if "di" in self.approaches:
+        if "di" in self.approaches:            
             for instance in tqdm(range(self.dataset[0:100].shape[0])):
                 for nucleoside in di_nucleosides:
                     for index in range(len(self.dataset.loc[instance, "sequence"]) - 1):
@@ -64,9 +66,9 @@ class Preprocessing:
                             nucleoside
                             == self.dataset.loc[instance, "sequence"][index : index + 4]
                         ):
-                            self.dataset[str(instance) + "_tri_nucleoside"] = 1
+                            self.dataset[str(instance) + "_tetra_nucleoside"] = 1
                         else:
-                            self.dataset[str(instance) + "_tri_nucleoside"] = 0
+                            self.dataset[str(instance) + "_tetra_nucleoside"] = 0
 
             print(self.dataset.isnull().sum().sum())
             print(self.dataset.shape)
