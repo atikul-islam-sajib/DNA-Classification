@@ -12,11 +12,13 @@ from utils import single_nucleosides, di_nucleosides, tri_nucleosides, tetra_nuc
 
 
 class Preprocessing:
-    def __init__(self, approaches: list = ["single", "di", "tri", "tetra"]):
+    def __init__(self, approaches: list = ["single", "di", "tri", "tetra", "GC-Content"]):
         self.approaches = approaches
 
         self.X = list()
         self.y = list()
+        
+        self.GC_Content = list()
 
         self.dataset = pd.read_csv("./data/raw/DNA-Classification.csv")
 
@@ -69,10 +71,21 @@ class Preprocessing:
                             self.dataset[str(instance) + "_tetra_nucleoside"] = 1
                         else:
                             self.dataset[str(instance) + "_tetra_nucleoside"] = 0
-
-            print(self.dataset.isnull().sum().sum())
-            print(self.dataset.shape)
-            print(self.dataset.head())
+            
+        if "GC-Content" in self.approaches:
+            for instance in tqdm(range(self.dataset.shape[0])):
+                sequence = self.dataset.loc[instance, "sequence"]
+                
+                A = sequence.count("A")
+                C = sequence.count("C")
+                G = sequence.count("G")
+                T = sequence.count("T")
+                
+                GC_Content = (G + C)/(A + C + G + T)
+                
+                self.GC_Content.append(GC_Content)
+                
+            self.dataset["GC-Content"] = self.GC_Content
 
 
 if __name__ == "__main__":
