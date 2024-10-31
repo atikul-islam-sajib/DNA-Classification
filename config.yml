@@ -1,3 +1,8 @@
 path:
   raw_path: "./data/raw/"
   processed_path: "./data/processed/"
+
+dataloader:
+  dataset: "./data/raw/DNA-Classification.csv"
+  split_size: 0.20
+  approaches: ["single", "di", "tri", "tetra", "gc_content"]
