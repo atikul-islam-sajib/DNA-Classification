@@ -12,7 +12,7 @@ from feature_generator import FeatureGenerator
 
 class DataLoader:
     def __init__(
-        self,
+        self, 
         dataset=None,
         split_size: float = 0.20,
         approaches: list = ["single", "di", "tri", "tetra", "gc_content"],
