@@ -20,8 +20,13 @@ class DataLoader:
         self.approaches = approaches
 
     def split_dataset(self):
-        pass
-
+        if os.path.exists(config()["path"]["processed_path"]):
+            self.processed_data = os.path.join(config()["path"]["processed_path"], "processed_dataset.csv")
+            
+            X = self.processed_data.iloc[:, :-1].values
+            y = self.processed_data.iloc[:, -1].values
+            
+                         
     def feature_generator(self):
         if isinstance(self.approaches, list):
             self.generator = FeatureGenerator(approaches=self.approaches)
