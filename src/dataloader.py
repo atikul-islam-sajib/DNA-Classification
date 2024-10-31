@@ -36,6 +36,23 @@ class DataLoader:
                 X, y, split_size=self.split_size, random_state=42
             )
 
+            for type, dataset in [
+                ("X_train", X_train),
+                ("X_test", X_test),
+                ("y_train", y_train),
+                ("y_test", y_test),
+            ]:
+                dataset.to_csv(
+                    os.path.join(config()["path"]["processed_path"], f"{type}.csv"),
+                    index=False,
+                )
+
+            print(
+                "Training and testing dataset is stored in the folder {}".format(
+                    config()["path"]["processed_path"]
+                )
+            )
+
             return {
                 "X_train": X_train,
                 "X_test": X_test,
@@ -97,7 +114,7 @@ if __name__ == "__main__":
     dataloader = DataLoader(
         dataset=args.dataset, approaches=args.approaches, split_size=args.split_size
     )
-    
+
     dataloader.feature_generator()
 
-    train_test_data = dataloader.split_dataset()
+    splits_dataset = dataloader.split_dataset()
