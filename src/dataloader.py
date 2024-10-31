@@ -33,7 +33,7 @@ class DataLoader:
             y = self.processed_data.iloc[:, -1]
 
             X_train, X_test, y_train, y_test = train_test_split(
-                X, y, split_size=self.split_size, random_state=42
+                X, y, test_size=self.split_size, random_state=42
             )
 
             for type, dataset in [
@@ -121,8 +121,8 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--dataset",
-        type=config()["dataloader"]["dataset"],
-        default=None,
+        type=str,
+        default=config()["dataloader"]["dataset"],
         help="The dataset to be used for the task".capitalize(),
     )
 

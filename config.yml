@@ -4,9 +4,9 @@ path:
   files_path: "./artifacts/files/"
 
 dataloader:
-  dataset: "./data/raw/DNA-Classification.csv"
+  dataset: "/Users/macbook/Desktop/DNA-Classification/data/raw/DNA-Classification.csv"
   split_size: 0.20
-  approaches: ["single", "di", "tri", "tetra", "gc_content"]
+  approaches: ["single", "di"]
 
 model:
   model_name: "RF" # It would be either "RF", "DT", "NB", "LR"
