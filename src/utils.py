@@ -1,5 +1,8 @@
+import sys
 import yaml
 import joblib
+
+sys.path.append("./src/")
 
 single_nucleosides = ["A", "C", "G", "T"]
 
