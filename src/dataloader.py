@@ -12,7 +12,7 @@ from feature_generator import FeatureGenerator
 
 class DataLoader:
     def __init__(
-        self, 
+        self,
         dataset=None,
         split_size: float = 0.20,
         approaches: list = ["single", "di", "tri", "tetra", "gc_content"],
@@ -79,7 +79,33 @@ class DataLoader:
 
     @staticmethod
     def dataset_history():
-        pass
+        if os.path.exists(config()["path"]["processed_path"]):
+            processed_path = os.path.join(
+                config()["path"]["processed_path"], "processed_dataset.csv"
+            )
+
+            dataset = pd.read_csv(processed_path)
+
+            information = {}
+
+            information["isNaN".title()] = (
+                "NaN".capitalize()
+                if dataset.isnull().sum().sum() > 0
+                else "no NaN".capitalize()
+            )
+
+            information["total_features".title()] = str(dataset.shape[1])
+            information["total_instances".title()] = str(dataset.shape[0])
+            information["dataset_shape".title()] = str(dataset.shape)
+            information["target_ratio".title()] = str(
+                dataset["labels"].value_counts(ascending=False).to_dict()
+            )
+
+            pd.DataFrame(information, index=[0]).to_csv(
+                os.path.join(config()["path"]["files_path"], "dataset_history.csv")
+            )
+            
+            print("Dataset history is stored in the folder {}".format(config()["path"]["files_path"]))
 
 
 if __name__ == "__main__":
@@ -115,6 +141,8 @@ if __name__ == "__main__":
         dataset=args.dataset, approaches=args.approaches, split_size=args.split_size
     )
 
-    dataloader.feature_generator()
+    # dataloader.feature_generator()
 
-    splits_dataset = dataloader.split_dataset()
+    # splits_dataset = dataloader.split_dataset()
+
+    dataloader.dataset_history()
