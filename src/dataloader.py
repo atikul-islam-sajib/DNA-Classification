@@ -104,9 +104,15 @@ class DataLoader:
             pd.DataFrame(information, index=[0]).to_csv(
                 os.path.join(config()["path"]["files_path"], "dataset_history.csv")
             )
-            
-            print("Dataset history is stored in the folder {}".format(config()["path"]["files_path"]))
 
+            print(
+                "Dataset history is stored in the folder {}".format(
+                    config()["path"]["files_path"]
+                )
+            )
+
+
+import argparse
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -115,7 +121,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--dataset",
-        type=str,
+        type=config()["dataloader"]["dataset"],
         default=None,
         help="The dataset to be used for the task".capitalize(),
     )
@@ -124,25 +130,41 @@ if __name__ == "__main__":
         "--approaches",
         type=str,
         nargs="+",
-        default=["single", "di", "tri", "tetra", "gc_content"],
+        default=config()["dataloader"]["approaches"],
         help="The approaches to be used for the task".capitalize(),
     )
 
     parser.add_argument(
         "--split_size",
         type=float,
-        default=0.20,
+        default=config()["dataloader"]["split_size"],
         help="The split size to be used for the task".capitalize(),
     )
 
     args = parser.parse_args()
 
-    dataloader = DataLoader(
-        dataset=args.dataset, approaches=args.approaches, split_size=args.split_size
-    )
+    try:
+        dataloader = DataLoader(
+            dataset=args.dataset, approaches=args.approaches, split_size=args.split_size
+        )
+    except Exception as e:
+        print(f"Error initializing DataLoader: {e}")
+        exit(1)
 
-    # dataloader.feature_generator()
+    try:
+        dataloader.feature_generator()
+    except Exception as e:
+        print(f"Error in feature generation: {e}")
+        exit(1)
 
-    # splits_dataset = dataloader.split_dataset()
+    try:
+        splits_dataset = dataloader.split_dataset()
+    except Exception as e:
+        print(f"Error in splitting the dataset: {e}")
+        exit(1)
 
-    dataloader.dataset_history()
+    try:
+        dataloader.dataset_history()
+    except Exception as e:
+        print(f"Error in recording dataset history: {e}")
+        exit(1)
