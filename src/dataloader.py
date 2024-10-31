@@ -1,11 +1,13 @@
-from utils import config
-from feature_generator import FeatureGenerator
 import os
 import sys
 import argparse
+import pandas as pd
 from sklearn.model_selection import train_test_split
 
 sys.path.append("./src")
+
+from utils import config
+from feature_generator import FeatureGenerator
 
 
 class DataLoader:
@@ -21,12 +23,26 @@ class DataLoader:
 
     def split_dataset(self):
         if os.path.exists(config()["path"]["processed_path"]):
-            self.processed_data = os.path.join(config()["path"]["processed_path"], "processed_dataset.csv")
-            
-            X = self.processed_data.iloc[:, :-1].values
-            y = self.processed_data.iloc[:, -1].values
-            
-                         
+            dataset = os.path.join(
+                config()["path"]["processed_path"], "processed_dataset.csv"
+            )
+
+            self.processed_data = pd.read_csv(dataset)
+
+            X = self.processed_data.iloc[:, :-1]
+            y = self.processed_data.iloc[:, -1]
+
+            X_train, X_test, y_train, y_test = train_test_split(
+                X, y, split_size=self.split_size, random_state=42
+            )
+
+            return {
+                "X_train": X_train,
+                "X_test": X_test,
+                "y_train": y_train,
+                "y_test": y_test,
+            }
+
     def feature_generator(self):
         if isinstance(self.approaches, list):
             self.generator = FeatureGenerator(approaches=self.approaches)
@@ -36,8 +52,11 @@ class DataLoader:
             except Exception as e:
                 print(f"An error occurred: {e}".capitalize())
             else:
-                print("Feature generation completed successfully and store in the folder {}".format(
-                    os.path.join(config()["path"]["processed_path"])))
+                print(
+                    "Feature generation completed successfully and store in the folder {}".format(
+                        os.path.join(config()["path"]["processed_path"])
+                    )
+                )
         else:
             raise ValueError("Approaches must be a list".capitalize())
 
@@ -48,18 +67,37 @@ class DataLoader:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="DataLoader and feature generator for the DNA-Classification task".title())
+        description="DataLoader and feature generator for the DNA-Classification task".title()
+    )
 
-    parser.add_argument("--dataset", type=str, default=None,
-                        help="The dataset to be used for the task".capitalize())
+    parser.add_argument(
+        "--dataset",
+        type=str,
+        default=None,
+        help="The dataset to be used for the task".capitalize(),
+    )
 
-    parser.add_argument("--approaches", type=str, nargs='+', default=["single", "di", "tri", "tetra", "gc_content"],
-                        help="The approaches to be used for the task".capitalize())
+    parser.add_argument(
+        "--approaches",
+        type=str,
+        nargs="+",
+        default=["single", "di", "tri", "tetra", "gc_content"],
+        help="The approaches to be used for the task".capitalize(),
+    )
 
-    parser.add_argument("--split_size", type=float, default=0.20,
-                        help="The split size to be used for the task".capitalize())
+    parser.add_argument(
+        "--split_size",
+        type=float,
+        default=0.20,
+        help="The split size to be used for the task".capitalize(),
+    )
 
     args = parser.parse_args()
 
     dataloader = DataLoader(
-        dataset=args.dataset, approaches=args.approaches, split_size=args.split_size)
+        dataset=args.dataset, approaches=args.approaches, split_size=args.split_size
+    )
+    
+    dataloader.feature_generator()
+
+    train_test_data = dataloader.split_dataset()

@@ -34,7 +34,7 @@ class FeatureGenerator:
 
     def feature_generator(self):
         if "single" in self.approaches:
-            for instance in tqdm(range(self.dataset[0:100].shape[0])):
+            for instance in tqdm(range(self.dataset[0:40].shape[0])):
                 for nucleoside in single_nucleosides:
                     for sequence in self.dataset.loc[instance, "sequence"]:
                         if nucleoside == sequence:
@@ -43,7 +43,7 @@ class FeatureGenerator:
                             self.dataset[str(instance) + "_single_nucleoside"] = 0
 
         if "di" in self.approaches:
-            for instance in tqdm(range(self.dataset[0:100].shape[0])):
+            for instance in tqdm(range(self.dataset[0:40].shape[0])):
                 for nucleoside in di_nucleosides:
                     for index in range(len(self.dataset.loc[instance, "sequence"]) - 1):
                         if (
@@ -55,7 +55,7 @@ class FeatureGenerator:
                             self.dataset[str(instance) + "_di_nucleoside"] = 0
 
         if "tri" in self.approaches:
-            for instance in tqdm(range(self.dataset[0:100].shape[0])):
+            for instance in tqdm(range(self.dataset[0:40].shape[0])):
                 for nucleoside in tri_nucleosides:
                     for index in range(len(self.dataset.loc[instance, "sequence"]) - 2):
                         if (
@@ -67,7 +67,7 @@ class FeatureGenerator:
                             self.dataset[str(instance) + "_tri_nucleoside"] = 0
 
         if "tetra" in self.approaches:
-            for instance in tqdm(range(self.dataset[0:100].shape[0])):
+            for instance in tqdm(range(self.dataset[0:40].shape[0])):
                 for nucleoside in tetra_nucleosides:
                     for index in range(len(self.dataset.loc[instance, "sequence"]) - 3):
                         if (
@@ -79,7 +79,7 @@ class FeatureGenerator:
                             self.dataset[str(instance) + "_tetra_nucleoside"] = 0
 
         if "gc-content" in self.approaches:
-            for instance in tqdm(range(self.dataset[0:100].shape[0])):
+            for instance in tqdm(range(self.dataset[0:40].shape[0])):
                 sequence = self.dataset.loc[instance, "sequence"]
 
                 A = sequence.count("A")
