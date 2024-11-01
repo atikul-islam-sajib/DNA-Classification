@@ -57,11 +57,12 @@ def features_extraction_technique():
 
     pca = PCA()
     pca.fit(training_dataset)
+
     explained_variance = np.cumsum(pca.explained_variance_ratio_)
     best_n_components = np.argmax(explained_variance >= 0.90) + 1
-    print(f"Best number of components: {best_n_components}")
 
     pca = PCA(n_components=best_n_components)
+
     X_train_transformed = pca.fit_transform(training_dataset)
     X_test_transformed = pca.transform(testing_dataset)
 
@@ -98,6 +99,7 @@ def features_extraction_technique():
     os.makedirs(
         os.path.join(config()["path"]["processed_path"], "PCA-dataset"), exist_ok=True
     )
+
     for dataset_name, data in [
         ("X_train", X_train),
         ("X_test", X_test),
@@ -111,7 +113,6 @@ def features_extraction_technique():
             index=False,
         )
 
-    print(f"X_train shape: {X_train.shape}, X_test shape: {X_test.shape}")
     return {"X_train": X_train, "X_test": X_test, "y_train": y_train, "y_test": y_test}
 
 
