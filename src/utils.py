@@ -376,22 +376,23 @@ def config():
         return yaml.safe_load(file)
 
 
-def hyperparameter_tuning():
-    return {
-        "RF": {
+def hyperparameter_tuning(model: str = "RF"):
+    if model == "RF":
+        {
             "n_estimators": [100, 200, 300],
             "criterion": ["gini", "entropy"],
             "max_features": ["sqrt", "log2"],
-        },
-        "DT": {
+        }
+    elif model == "DT":
+        {
             "criterion": ["gini", "entropy"],
             "max_depth": [None, 10, 20, 30],
             "min_samples_split": [2, 5],
             "min_samples_leaf": [1, 2],
-        },
-        "LR": {
+        }
+    elif model == "LR":
+        {
             "penalty": ["l1", "l2", "elasticnet", "none"],
             "C": [0.001, 0.01, 0.1, 1, 10],
             "max_iter": [100, 200, 300],
-        },
-    }
+        }

@@ -6,6 +6,7 @@ import pandas as pd
 from tqdm import tqdm
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import GridSearchCV
 
 
 sys.path.append("./src/")
@@ -64,6 +65,11 @@ class Trainer:
     def train(self):
         dataset = self.choose_dataset()
         classifier = self.select_the_model()
+
+        tuning = GridSearchCV(
+            estimator=classifier,
+            param_grid=config()["param_grid"],
+        )
 
         classifier.fit(dataset["X_train"], dataset["y_train"])
 
