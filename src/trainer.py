@@ -82,6 +82,24 @@ class Trainer:
         else:
             return "Make sure the model is in the right format".capitalize()
 
+    def model_evaluation(self, **kwargs):
+        with open("./evaluation.json", "w") as file:
+            json.dump(
+                {
+                    "Accuracy": np.mean(kwargs["accuracy"]).round(2),
+                    "Precision": np.mean(kwargs["precision"]).round(2),
+                    "Recall": np.mean(kwargs["recall"]).round(2),
+                    "F1 Score": np.mean(kwargs["f1_score"]).round(2),
+                    "Classification Report": classification_report(
+                        kwargs["actual_labels"],
+                        kwargs["predicted_labels"],
+                        output_dict=True,
+                    ),
+                },
+                file,
+                indent=4,
+            )
+
     def train(self):
         dataset = self.choose_dataset()
         classifier = self.select_the_model()
@@ -95,8 +113,22 @@ class Trainer:
             )
 
             classifier.fit(dataset["X_train"], dataset["y_train"])
+
+            predicted = classifier.predict(dataset["X_test"])
+
             print("The best parameters are: ".capitalize(), classifier.best_params_)
             print("Refined best parameters: ".capitalize(), classifier.best_score_)
+
+            self.model_evaluation(
+                accuracy=accuracy_score(predicted, dataset["y_test"]),
+                precision=precision_score(
+                    predicted, dataset["y_test"], average="weighted"
+                ),
+                recall=recall_score(predicted, dataset["y_test"], average="weighted"),
+                f1_score=f1_score(predicted, dataset["y_test"], average="weighted"),
+                actual_labels=dataset["y_test"],
+                predicted_labels=predicted,
+            )
 
         else:
             predicted_labels = []
@@ -139,19 +171,13 @@ class Trainer:
                 predicted_labels.extend(predicted)
                 actual_labels.extend(y_test_fold)
 
-            with open("./evaluation.json", "w") as file:
-                json.dump(
-                    {
-                        "Accuracy": np.mean(self.accuracy).round(2),
-                        "Precision": np.mean(self.precision).round(2),
-                        "Recall": np.mean(self.recall).round(2),
-                        "F1 Score": np.mean(self.f1_score).round(2),
-                        "Classification Report": classification_report(
-                            actual_labels, predicted_labels, output_dict=True
-                        ),
-                    },
-                    file,
-                    indent=4,
+                self.model_evaluation(
+                    accuracy=self.accuracy,
+                    precision=self.precision,
+                    recall=self.recall,
+                    f1_score=self.f1_score,
+                    predicted_labels=predicted_labels,
+                    actual_labels=actual_labels,
                 )
 
             print(
@@ -161,6 +187,6 @@ class Trainer:
 
 if __name__ == "__main__":
     trainer = Trainer(
-        features_extraction=True, hyperparameter_tuning=False, model="RF", KFold=5
+        features_extraction=True, hyperparameter_tuning=True, model="RF", KFold=5
     )
     trainer.train()
