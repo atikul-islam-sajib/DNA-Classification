@@ -378,21 +378,35 @@ def config():
 
 def hyperparameter_tuning(model: str = "RF"):
     if model == "RF":
-        {
+        return {
             "n_estimators": [100, 200, 300],
             "criterion": ["gini", "entropy"],
             "max_features": ["sqrt", "log2"],
         }
     elif model == "DT":
-        {
+        return {
             "criterion": ["gini", "entropy"],
             "max_depth": [None, 10, 20, 30],
             "min_samples_split": [2, 5],
             "min_samples_leaf": [1, 2],
         }
     elif model == "LR":
-        {
+        return {
             "penalty": ["l1", "l2", "elasticnet", "none"],
             "C": [0.001, 0.01, 0.1, 1, 10],
             "max_iter": [100, 200, 300],
         }
+    elif model == "XGB":
+        return {
+            "learning_rate": [0.01, 0.1, 1],
+            "max_depth": [3, 5, 7],
+            "n_estimators": [100, 200, 300],
+        }
+    elif model == "NB":
+        return {
+            "var_smoothing": [1e-09],
+        }
+    else:
+        raise ValueError(
+            "The model name is not supported. Please check the model name and try again".capitalize()
+        )
