@@ -156,8 +156,6 @@ def features_selection_technique():
 
         columns = importance_df[importance_df["Importance"] >= 0.001]["Features"].values
 
-        print(importance_df[importance_df["Importance"] >= 0.001].head())
-
         X_train = X_train.loc[:, columns]
         X_test = X_test.loc[:, columns]
 
