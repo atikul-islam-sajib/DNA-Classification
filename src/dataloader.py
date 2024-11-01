@@ -29,8 +29,8 @@ class DataLoader:
 
             self.processed_data = pd.read_csv(dataset)
 
-            X = self.processed_data.iloc[:, :-1]
-            y = self.processed_data.iloc[:, -1]
+            X = self.processed_data.iloc[:, 4:]
+            y = self.processed_data.iloc[:, 3]
 
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=self.split_size, random_state=42

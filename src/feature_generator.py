@@ -30,19 +30,32 @@ class FeatureGenerator:
 
         self.GC_Content = list()
 
-        self.dataset = pd.read_csv("./data/raw/DNA-Classification.csv")
+        self.dataset = pd.read_csv("./data/raw/DNA-Classification.csv")[0:8]
+
 
     def feature_generator(self):
         if "single" in self.approaches:
-            for instance in tqdm(range(self.dataset.iloc[0:40, :].shape[0])):
+            # Find the maximum sequence length to pre-create all columns
+            max_len = max(self.dataset["sequence"].apply(len))
+            
+            # Create columns for each nucleoside at each position up to the max sequence length
+            for pos in range(max_len):
+                for nucleoside in single_nucleosides:
+                    feature_column = f"{nucleoside}_pos_{pos}"
+                    self.dataset[feature_column] = 0  # Initialize with 0s for all rows
+
+            # Iterate over each sequence and set 1 where there's a match
+            for instance in tqdm(range(self.dataset.shape[0])):
                 sequence = self.dataset.loc[instance, "sequence"]
+                
                 for pos, nucleotide in enumerate(sequence):
+                    # For each nucleoside, set the column value to 1 if there's a match
                     for nucleoside in single_nucleosides:
                         feature_column = f"{nucleoside}_pos_{pos}"
+                        # Set to 1 if the nucleoside matches the nucleotide at this position
+                        if nucleoside == nucleotide:
+                            self.dataset.loc[instance, feature_column] = 1
 
-                        self.dataset.loc[instance, feature_column] = (
-                            1 if nucleoside == nucleotide else 0
-                        )
 
         if "di" in self.approaches:
             for instance in tqdm(range(self.dataset.iloc[0:40, :].shape[0])):
