@@ -32,80 +32,84 @@ class FeatureGenerator:
 
         self.dataset = pd.read_csv("./data/raw/DNA-Classification.csv")[0:8]
 
-
     def feature_generator(self):
         if "single" in self.approaches:
-            # Find the maximum sequence length to pre-create all columns
             max_len = max(self.dataset["sequence"].apply(len))
-            
-            # Create columns for each nucleoside at each position up to the max sequence length
+
             for pos in range(max_len):
                 for nucleoside in single_nucleosides:
                     feature_column = f"{nucleoside}_pos_{pos}"
-                    self.dataset[feature_column] = 0  # Initialize with 0s for all rows
+                    self.dataset[feature_column] = 0
 
-            # Iterate over each sequence and set 1 where there's a match
             for instance in tqdm(range(self.dataset.shape[0])):
                 sequence = self.dataset.loc[instance, "sequence"]
-                
+
                 for pos, nucleotide in enumerate(sequence):
-                    # For each nucleoside, set the column value to 1 if there's a match
                     for nucleoside in single_nucleosides:
                         feature_column = f"{nucleoside}_pos_{pos}"
-                        # Set to 1 if the nucleoside matches the nucleotide at this position
                         if nucleoside == nucleotide:
                             self.dataset.loc[instance, feature_column] = 1
 
-
         if "di" in self.approaches:
-            for instance in tqdm(range(self.dataset.iloc[0:40, :].shape[0])):
-                sequence = self.dataset.loc[instance, "sequence"]
+            max_len = max(self.dataset["sequence"].apply(len))
 
+            for pos in range(max_len - 1):
+                for di_nucleoside in di_nucleosides:
+                    feature_column = f"{di_nucleoside}_pos_{pos}_di_nucleoside"
+                    self.dataset[feature_column] = 0
+
+            for instance in tqdm(range(self.dataset.shape[0])):
+                sequence = self.dataset.loc[instance, "sequence"]
                 for pos in range(len(sequence) - 1):
                     for di_nucleoside in di_nucleosides:
                         feature_column = f"{di_nucleoside}_pos_{pos}_di_nucleoside"
-
-                        self.dataset.loc[instance, feature_column] = (
-                            1 if sequence[pos : pos + 2] == di_nucleoside else 0
-                        )
+                        if sequence[pos : pos + 2] == di_nucleoside:
+                            self.dataset.loc[instance, feature_column] = 1
 
         if "tri" in self.approaches:
-            for instance in tqdm(range(self.dataset.iloc[0:40, :].shape[0])):
-                sequence = self.dataset.loc[instance, "sequence"]
+            max_len = max(self.dataset["sequence"].apply(len))
 
+            for pos in range(max_len - 2):
+                for tri_nucleoside in tri_nucleosides:
+                    feature_column = f"{tri_nucleoside}_pos_{pos}_tri_nucleoside"
+                    self.dataset[feature_column] = 0
+
+            for instance in tqdm(range(self.dataset.shape[0])):
+                sequence = self.dataset.loc[instance, "sequence"]
                 for pos in range(len(sequence) - 2):
                     for tri_nucleoside in tri_nucleosides:
                         feature_column = f"{tri_nucleoside}_pos_{pos}_tri_nucleoside"
-
-                        self.dataset.loc[instance, feature_column] = (
-                            1 if sequence[pos : pos + 3] == tri_nucleoside else 0
-                        )
+                        if sequence[pos : pos + 3] == tri_nucleoside:
+                            self.dataset.loc[instance, feature_column] = 1
 
         if "tetra" in self.approaches:
-            for instance in tqdm(range(self.dataset.iloc[0:40, :].shape[0])):
+            max_len = max(self.dataset["sequence"].apply(len))
+
+            for pos in range(max_len - 3):
+                for tetra_nucleoside in tetra_nucleosides:
+                    feature_column = f"{tetra_nucleoside}_pos_{pos}_tetra_nucleoside"
+                    self.dataset[feature_column] = 0
+
+            for instance in tqdm(range(self.dataset.shape[0])):
                 sequence = self.dataset.loc[instance, "sequence"]
-
                 for pos in range(len(sequence) - 3):
-                    for tri_nucleoside in tetra_nucleosides:
-                        feature_column = f"{tri_nucleoside}_pos_{pos}_tetra_nucleoside"
-
-                        self.dataset.loc[instance, feature_column] = (
-                            1 if sequence[pos : pos + 4] == tri_nucleoside else 0
+                    for tetra_nucleoside in tetra_nucleosides:
+                        feature_column = (
+                            f"{tetra_nucleoside}_pos_{pos}_tetra_nucleoside"
                         )
+                        if sequence[pos : pos + 4] == tetra_nucleoside:
+                            self.dataset.loc[instance, feature_column] = 1
 
         if "gc-content" in self.approaches:
             self.GC_Content = []
 
-            for instance in tqdm(range(self.dataset.iloc[0:40, :].shape[0])):
+            for instance in tqdm(range(self.dataset.shape[0])):
                 sequence = self.dataset.loc[instance, "sequence"]
-
                 G_count = sequence.count("G")
                 C_count = sequence.count("C")
-
                 GC_Content = (
                     (G_count + C_count) / len(sequence) if len(sequence) > 0 else 0
                 )
-
                 self.GC_Content.append(GC_Content)
 
             self.dataset["GC-Content"] = self.GC_Content
