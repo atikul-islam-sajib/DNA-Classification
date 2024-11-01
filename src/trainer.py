@@ -99,6 +99,8 @@ class Trainer:
                 file,
                 indent=4,
             )
+        
+        print( "The evaluation metrics are saved in the evaluation.json file".capitalize())
 
     def train(self):
         dataset = self.choose_dataset()
@@ -174,11 +176,6 @@ class Trainer:
                 predicted_labels=predicted_labels,
                 actual_labels=actual_labels,
             )
-
-            print(
-                "The evaluation metrics are saved in the evaluation.json file".capitalize()
-            )
-
 
 if __name__ == "__main__":
     trainer = Trainer(
