@@ -41,8 +41,6 @@ def dataset_initialization():
     training_dataset = training_dataset.iloc[:, :-1]
     testing_dataset = testing_dataset.iloc[:, :-1]
 
-    print(training_dataset.head())
-
     return {
         "X_train": X_train,
         "X_test": X_test,

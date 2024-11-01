@@ -1,5 +1,7 @@
 import os
 import sys
+import math
+import json
 import argparse
 import numpy as np
 import pandas as pd
@@ -7,7 +9,13 @@ from tqdm import tqdm
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV, KFold
-from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
+from sklearn.metrics import (
+    accuracy_score,
+    recall_score,
+    f1_score,
+    precision_score,
+    classification_report,
+)
 
 
 sys.path.append("./src/")
@@ -15,6 +23,10 @@ sys.path.append("./src/")
 from utils import config, hyperparameter_tuning
 from helper import features_extraction_technique, features_selection_technique
 from model import MachineLearningModel
+
+import warnings
+
+warnings.filterwarnings("ignore")
 
 
 class Trainer:
@@ -87,11 +99,19 @@ class Trainer:
             print("Refined best parameters: ".capitalize(), classifier.best_score_)
 
         else:
+            predicted_labels = []
+            actual_labels = []
+
             KFoldCV = KFold(n_splits=self.KFold, shuffle=True, random_state=42)
 
-            for train_index, test_index in KFoldCV.split(
-                dataset["X_train"], dataset["y_train"]
+            for index, (train_index, test_index) in enumerate(
+                KFoldCV.split(dataset["X_train"], dataset["y_train"])
             ):
+                print(
+                    "*" * 10,
+                    "KFold CV - {} is executing".format(index + 1).title(),
+                    "*" * 10,
+                )
                 X_train_fold, y_train_fold = (
                     dataset["X_train"].iloc[train_index, :],
                     dataset["y_train"].iloc[train_index],
@@ -116,10 +136,27 @@ class Trainer:
                     f1_score(y_test_fold, predicted, average="weighted")
                 )
 
-            print("Average Accuracy: ", np.mean(self.accuracy))
-            print("Average Precision: ", np.mean(self.precision))
-            print("Average Recall: ", np.mean(self.recall))
-            print("Average F1 Score: ", np.mean(self.f1_score))
+                predicted_labels.extend(predicted)
+                actual_labels.extend(y_test_fold)
+
+            with open("./evaluation.json", "w") as file:
+                json.dump(
+                    {
+                        "Accuracy": np.mean(self.accuracy).round(2),
+                        "Precision": np.mean(self.precision).round(2),
+                        "Recall": np.mean(self.recall).round(2),
+                        "F1 Score": np.mean(self.f1_score).round(2),
+                        "Classification Report": classification_report(
+                            actual_labels, predicted_labels, output_dict=True
+                        ),
+                    },
+                    file,
+                    indent=4,
+                )
+
+            print(
+                "The evaluation metrics are saved in the evaluation.json file".capitalize()
+            )
 
 
 if __name__ == "__main__":
