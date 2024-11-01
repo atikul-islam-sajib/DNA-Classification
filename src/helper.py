@@ -16,18 +16,27 @@ from utils import config
 
 def dataset_initialization():
 
-    X_train = os.path.join(config()["path"]["processed_path"], "X_train.csv")
-    X_test = os.path.join(config()["path"]["processed_path"], "X_test.csv")
-    y_train = os.path.join(config()["path"]["processed_path"], "y_train.csv")
-    y_test = os.path.join(config()["path"]["processed_path"], "y_test.csv")
+    X_train = pd.read_csv(
+        os.path.join(config()["path"]["processed_path"], "X_train.csv")
+    )
+    X_test = pd.read_csv(
+        os.path.join(config()["path"]["processed_path"], "X_test.csv"),
+    )
+    y_train = pd.read_csv(
+        os.path.join(config()["path"]["processed_path"], "y_train.csv")
+    )
+    y_test = pd.read_csv(
+        os.path.join(config()["path"]["processed_path"], "y_test.csv"),
+    )
 
-    X_train = pd.read_csv(X_train)
-    X_test = pd.read_csv(X_test)
-    y_train = pd.read_csv(y_train)
-    y_test = pd.read_csv(y_test)
-
-    training_dataset = pd.concat([X_train, y_train], axis=1)
-    testing_dataset = pd.concat([X_test, y_test], axis=1)
+    training_dataset = pd.concat(
+        [X_train, y_train],
+        axis=1,
+    )
+    testing_dataset = pd.concat(
+        [X_test, y_test],
+        axis=1,
+    )
 
     training_dataset = training_dataset.iloc[:, 4:]
     testing_dataset = testing_dataset.iloc[:, 4:]
@@ -64,10 +73,12 @@ def features_extraction_techquiue():
     y_transformed = decompositoon.transform(testing_dataset)
 
     X = pd.concat(
-        [X_transformed, pd.concat([X_train, y_train], axis=1)["labels"]], axis=1
+        [X_transformed, pd.concat([X_train, y_train], axis=1)["labels"]],
+        axis=1,
     )
     y = pd.concat(
-        [y_transformed, pd.concat([X_train, y_train], axis=1)["labels"]], axis=1
+        [y_transformed, pd.concat([X_train, y_train], axis=1)["labels"]],
+        axis=1,
     )
 
     X_train, X_test, y_train, y_test = train_test_split(
