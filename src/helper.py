@@ -73,7 +73,6 @@ def features_extraction_technique():
         print("An error is occured: ", e)
 
     explained_variance = np.cumsum(pca.explained_variance_ratio_)
-    print(explained_variance)
     best_n_components = np.argmax(explained_variance >= 0.90) + 1
 
     pca = PCA(n_components=best_n_components)
