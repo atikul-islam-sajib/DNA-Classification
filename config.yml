@@ -6,7 +6,7 @@ path:
 dataloader:
   dataset: "./data/raw/DNA-Classification.csv"
   split_size: 0.20
-  approaches: ["single", "di", "tri", "tetra"] # There is another approach named "gc_content"
+  approaches: ["single", "di"] # There is another approach named "gc_content"
 
 model:
   model_name: "RF" # It would be either "RF", "DT", "NB", "LR"

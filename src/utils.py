@@ -352,21 +352,46 @@ tetra_nucleosides = [
     "TTTT",
 ]
 
-def dump(value = None, filename = None):
+
+def dump(value=None, filename=None):
     if (value is not None) and (filename is not None):
         joblib.dump(value=value, filename=filename)
-        
+
     else:
         raise ValueError("Value & Filename should be passed.".capitalize())
-    
-    
-def load(filename = None):
+
+
+def load(filename=None):
     if filename is not None:
         return joblib.load(filename=filename)
-    
+
     else:
-        raise ValueError("Filename should be passed in an appropriate manner".capitalize())
-    
+        raise ValueError(
+            "Filename should be passed in an appropriate manner".capitalize()
+        )
+
+
 def config():
     with open("./config.yml", "r") as file:
         return yaml.safe_load(file)
+
+
+def hyperparameter_tuning():
+    return {
+        "RF": {
+            "n_estimators": [100, 200, 300],
+            "criterion": ["gini", "entropy"],
+            "max_features": ["sqrt", "log2"],
+        },
+        "DT": {
+            "criterion": ["gini", "entropy"],
+            "max_depth": [None, 10, 20, 30],
+            "min_samples_split": [2, 5],
+            "min_samples_leaf": [1, 2],
+        },
+        "LR": {
+            "penalty": ["l1", "l2", "elasticnet", "none"],
+            "C": [0.001, 0.01, 0.1, 1, 10],
+            "max_iter": [100, 200, 300],
+        },
+    }
