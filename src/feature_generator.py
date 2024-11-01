@@ -30,7 +30,7 @@ class FeatureGenerator:
 
         self.GC_Content = list()
 
-        self.dataset = pd.read_csv("./data/raw/DNA-Classification.csv")[0:4]
+        self.dataset = pd.read_csv("./data/raw/DNA-Classification.csv")[0:40]
 
     def feature_generator(self):
         if "single" in self.approaches:

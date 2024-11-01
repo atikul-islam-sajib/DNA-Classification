@@ -4,7 +4,6 @@ import argparse
 import traceback
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
 from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -155,7 +154,9 @@ def features_selection_technique():
             axis=1,
         ).sort_values(by=["Importance"], ascending=False)
 
-        columns = importance_df[importance_df["Importance"] >= 0.0]["Features"].values
+        columns = importance_df[importance_df["Importance"] >= 0.001]["Features"].values
+
+        print(importance_df[importance_df["Importance"] >= 0.001].head())
 
         X_train = X_train.loc[:, columns]
         X_test = X_test.loc[:, columns]
@@ -193,5 +194,22 @@ def features_selection_technique():
 
 
 if __name__ == "__main__":
-    # features_extraction_technique()
-    features_selection_technique()
+    parser = argparse.ArgumentParser(
+        description="Helper method for the DNA-Classifier".title()
+    )
+    parser.add_argument(
+        "--FE",
+        type=str,
+        default="PCA",
+        help="Features Extraction Technique".capitalize(),
+    )
+    parser.add_argument(
+        "--FS", type=str, default="RF", help="Features Selection Technique".capitalize()
+    )
+
+    args = parser.parse_args()
+
+    if args.FE:
+        features_extraction_technique()
+    else:
+        features_selection_technique()
