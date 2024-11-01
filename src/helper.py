@@ -1,10 +1,12 @@
 import os
 import sys
 import argparse
+import traceback
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from sklearn.decomposition import PCA
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
 
@@ -22,7 +24,7 @@ def dataset_initialization():
         os.path.join(config()["path"]["processed_path"], "X_test.csv"),
     )
     y_train = pd.read_csv(
-        os.path.join(config()["path"]["processed_path"], "y_train.csv")
+        os.path.join(config()["path"]["processed_path"], "y_train.csv"),
     )
     y_test = pd.read_csv(
         os.path.join(config()["path"]["processed_path"], "y_test.csv"),
@@ -37,8 +39,10 @@ def dataset_initialization():
         axis=1,
     )
 
-    training_dataset = training_dataset.iloc[:, 2:]
-    testing_dataset = testing_dataset.iloc[:, 2:]
+    training_dataset = training_dataset.iloc[:, :-1]
+    testing_dataset = testing_dataset.iloc[:, :-1]
+
+    print(training_dataset.head())
 
     return {
         "X_train": X_train,
@@ -51,14 +55,26 @@ def dataset_initialization():
 
 
 def features_extraction_technique():
-    dataset = dataset_initialization()
-    training_dataset = dataset["training_dataset"]
-    testing_dataset = dataset["testing_dataset"]
+    try:
+        dataset = dataset_initialization()
 
-    pca = PCA()
-    pca.fit(training_dataset)
+        training_dataset = dataset["training_dataset"]
+        testing_dataset = dataset["testing_dataset"]
+
+    except Exception as e:
+        print("An error is occured: ", e)
+
+    try:
+        pca = PCA()
+        pca.fit(training_dataset)
+
+    except ImportError as e:
+        print("An error is occured: ", e)
+    except Exception as e:
+        print("An error is occured: ", e)
 
     explained_variance = np.cumsum(pca.explained_variance_ratio_)
+    print(explained_variance)
     best_n_components = np.argmax(explained_variance >= 0.90) + 1
 
     pca = PCA(n_components=best_n_components)
@@ -116,5 +132,66 @@ def features_extraction_technique():
     return {"X_train": X_train, "X_test": X_test, "y_train": y_train, "y_test": y_test}
 
 
+def features_selection_technique():
+    RF = RandomForestClassifier(n_estimators=300, criterion="gini", random_state=42)
+
+    try:
+        dataset = dataset_initialization()
+
+        X_train = dataset["X_train"]
+        y_train = dataset["y_train"]
+        X_test = dataset["X_test"]
+        y_test = dataset["y_test"]
+
+        RF.fit(X_train, y_train)
+
+        feature_importances = RF.feature_importances_
+
+        importance_df = pd.concat(
+            [
+                pd.DataFrame(X_train.columns, columns=["Features"]),
+                pd.DataFrame(feature_importances, columns=["Importance"]),
+            ],
+            axis=1,
+        ).sort_values(by=["Importance"], ascending=False)
+
+        columns = importance_df[importance_df["Importance"] >= 0.0]["Features"].values
+
+        X_train = X_train.loc[:, columns]
+        X_test = X_test.loc[:, columns]
+
+        os.makedirs(
+            os.path.join(config()["path"]["processed_path"], "Feature-Importance"),
+            exist_ok=True,
+        )
+
+        for dataset_name, data in [
+            ("X_train", X_train),
+            ("X_test", X_test),
+            ("y_train", y_train),
+            ("y_test", y_test),
+        ]:
+            data.to_csv(
+                os.path.join(
+                    config()["path"]["processed_path"],
+                    "Feature-Importance",
+                    f"{dataset_name}.csv",
+                ),
+                index=False,
+            )
+
+        return {
+            "X_train": X_train,
+            "X_test": X_test,
+            "y_train": y_train,
+            "y_test": y_test,
+        }
+
+    except Exception as e:
+        print("An error occurred: ", e)
+        traceback.print_exc()
+
+
 if __name__ == "__main__":
-    features_extraction_technique()
+    # features_extraction_technique()
+    features_selection_technique()

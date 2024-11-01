@@ -1,2 +1,2 @@
 ,Isnan,Total_Features,Total_Instances,Dataset_Shape,Target_Ratio
-0,No nan,7060,8,"(8, 7060)","{4: 4, 6: 3, 0: 1}"
+0,No nan,104692,4,"(4, 104692)",{4: 4}
