@@ -136,25 +136,20 @@ class Trainer:
 
             KFoldCV = KFold(n_splits=self.KFold, shuffle=True, random_state=42)
 
-            for index, (train_index, test_index) in enumerate(
-                KFoldCV.split(dataset["X_train"], dataset["y_train"])
-            ):
-                print(
-                    "*" * 10,
-                    "KFold CV - {} is executing".format(index + 1).title(),
-                    "*" * 10,
-                )
-                X_train_fold, y_train_fold = (
-                    dataset["X_train"].iloc[train_index, :],
-                    dataset["y_train"].iloc[train_index],
-                )
-                X_test_fold, y_test_fold = (
-                    dataset["X_train"].iloc[test_index, :],
-                    dataset["y_train"].iloc[test_index],
-                )
+            X = pd.concat([dataset["X_train"], dataset["X_test"]], axis=0).reset_index(
+                drop=True
+            )
+            y = pd.concat([dataset["y_train"], dataset["y_test"]], axis=0).reset_index(
+                drop=True
+            )
+
+            for index, (train_index, test_index) in enumerate(KFoldCV.split(X, y)):
+                print(f"{'*' * 10} KFold CV - {index + 1} is executing {'*' * 10}")
+
+                X_train_fold, y_train_fold = X.iloc[train_index, :], y.iloc[train_index]
+                X_test_fold, y_test_fold = X.iloc[test_index, :], y.iloc[test_index]
 
                 classifier.fit(X_train_fold, y_train_fold)
-
                 predicted = classifier.predict(X_test_fold)
 
                 self.accuracy.append(accuracy_score(y_test_fold, predicted))
@@ -169,16 +164,16 @@ class Trainer:
                 )
 
                 predicted_labels.extend(predicted)
-                actual_labels.extend(y_test_fold)
+                actual_labels.extend(y_test_fold.values.ravel())
 
-                self.model_evaluation(
-                    accuracy=self.accuracy,
-                    precision=self.precision,
-                    recall=self.recall,
-                    f1_score=self.f1_score,
-                    predicted_labels=predicted_labels,
-                    actual_labels=actual_labels,
-                )
+            self.model_evaluation(
+                accuracy=self.accuracy,
+                precision=self.precision,
+                recall=self.recall,
+                f1_score=self.f1_score,
+                predicted_labels=predicted_labels,
+                actual_labels=actual_labels,
+            )
 
             print(
                 "The evaluation metrics are saved in the evaluation.json file".capitalize()
@@ -187,6 +182,6 @@ class Trainer:
 
 if __name__ == "__main__":
     trainer = Trainer(
-        features_extraction=True, hyperparameter_tuning=True, model="RF", KFold=5
+        features_extraction=True, hyperparameter_tuning=False, model="RF", KFold=2
     )
     trainer.train()

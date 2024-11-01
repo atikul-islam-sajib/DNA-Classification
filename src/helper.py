@@ -152,6 +152,7 @@ def features_selection_technique():
         ).sort_values(by=["Importance"], ascending=False)
 
         columns = importance_df[importance_df["Importance"] >= 0.001]["Features"].values
+        index = importance_df[importance_df["Importance"] >= 0.001].index
 
         X_train = X_train.loc[:, columns]
         X_test = X_test.loc[:, columns]
@@ -189,22 +190,27 @@ def features_selection_technique():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Helper method for the DNA-Classifier".title()
-    )
-    parser.add_argument(
-        "--FE",
-        type=str,
-        default="PCA",
-        help="Features Extraction Technique".capitalize(),
-    )
-    parser.add_argument(
-        "--FS", type=str, default="RF", help="Features Selection Technique".capitalize()
-    )
+    # parser = argparse.ArgumentParser(
+    #     description="Helper method for the DNA-Classifier".title()
+    # )
+    # parser.add_argument(
+    #     "--FE",
+    #     type=str,
+    #     default="PCA",
+    #     help="Features Extraction Technique".capitalize(),
+    # )
+    # parser.add_argument(
+    #     "--FS",
+    #     type=bool,
+    #     default=False,
+    #     help="Features Selection Technique".capitalize(),
+    # )
 
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
-    if args.FE:
-        features_extraction_technique()
-    else:
-        features_selection_technique()
+    # if args.FE:
+    #     _ = features_extraction_technique()
+    # elif args.FS:
+    #     _ = features_selection_technique()
+
+    features_selection_technique()
