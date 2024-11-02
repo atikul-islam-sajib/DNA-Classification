@@ -16,9 +16,9 @@ from sklearn.metrics import (
 
 sys.path.append("./src/")
 
-from utils import config, hyperparameter_tuning
-from helper import features_extraction_technique, features_selection_technique
 from model import MachineLearningModel
+from utils import config, hyperparameter_tuning, config
+from helper import features_extraction_technique, features_selection_technique
 
 import warnings
 
@@ -96,6 +96,10 @@ class Trainer:
                 indent=4,
             )
 
+            print(
+                "The evaluation metrics are saved in the evaluation.json file".capitalize()
+            )
+
     def train(self):
         dataset = self.choose_dataset()
         classifier = self.select_the_model()
@@ -171,23 +175,31 @@ class Trainer:
                 actual_labels=actual_labels,
             )
 
-            print(
-                "The evaluation metrics are saved in the evaluation.json file".capitalize()
-            )
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Train the model for DNA-Classification".title()
     )
     parser.add_argument(
-        "--FE", type=bool, default=True, help="Features Extraction".capitalize()
+        "--FE",
+        type=bool,
+        default=config()["trainer"]["features_extraction"],
+        choices=[True, False],
+        help="Features Extraction".capitalize(),
     )
     parser.add_argument(
-        "--FS", type=bool, default=False, help="Feature Selection".capitalize()
+        "--FS",
+        type=bool,
+        default=config()["trainer"]["features_selection"],
+        choices=[True, False],
+        help="Feature Selection".capitalize(),
     )
     parser.add_argument(
-        "--HP", type=bool, default=False, help="Hyperparameter Tuning".capitalize()
+        "--HP",
+        type=bool,
+        default=config()["trainer"]["hyperparameter_tuning"],
+        choices=[True, False],
+        help="Hyperparameter Tuning".capitalize(),
     )
     parser.add_argument(
         "--model",
@@ -197,7 +209,13 @@ if __name__ == "__main__":
         help="Model".capitalize(),
     )
 
-    parser.add_argument("--KFold", type=int, default=5, help="K-Fold".capitalize())
+    parser.add_argument(
+        "--KFold",
+        type=int,
+        default=config()["trainer"]["KFold"],
+        choices=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        help="K-Fold".capitalize(),
+    )
 
     args = parser.parse_args()
 

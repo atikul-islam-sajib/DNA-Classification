@@ -1,18 +1,16 @@
 path:
-  raw_path: "./data/raw/"
-  processed_path: "./data/processed/"
-  files_path: "./artifacts/files/"
+  raw_path: "./data/raw/"                         # Directory path for raw data files
+  processed_path: "./data/processed/"             # Directory path for processed data files
+  files_path: "./artifacts/files/"                # Directory path for saved artifacts and files
 
 dataloader:
-  dataset: "./data/raw/DNA-Classification.csv"
-  split_size: 0.20
-  approaches: ["single", "di", "gc_content"] # There is another approach named "gc_content"
+  dataset: "./data/raw/DNA-Classification.csv"        # Path to the main dataset file
+  split_size: 0.20                                    # Test split size for train-test split
+  approaches: ["single", "di", "gc_content"]          # Feature extraction approaches: single, di, gc_content
 
 trainer:
-  model_name: "RF" # It would be either "RF", "DT", "NB", "LR"
-  features_extraction: True
-  features_selection: False
-  hyperparameter_tuning: False # Please turn of hyperparameter_tuning while using KFold
-  KFold: 2
-
-  
+  model_name: "LR"                 # Model choice: "RF", "DT", "NB", "LR", or "XGB"
+  features_extraction: True        # Enable feature extraction in training
+  features_selection: False        # Disable feature selection by default
+  hyperparameter_tuning: False     # Disable hyperparameter tuning when using KFold
+  KFold: 2                         # Number of folds for KFold cross-validation
