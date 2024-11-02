@@ -1,0 +1,3 @@
+stages:
+  train:
+    cmd: python src/cli.py
