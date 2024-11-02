@@ -1,0 +1,47 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python src/cli.py
+    deps:
+    - path: ./artifacts/
+      hash: md5
+      md5: 116b30ec10cc9d8603c761e3e931c2e0.dir
+      size: 110
+      nfiles: 3
+    - path: ./config.yml/
+      hash: md5
+      md5: fba28f2732216aa3ddcbee03539f487e
+      size: 990
+    - path: ./data/
+      hash: md5
+      md5: 34a50f727617f9637f65dd9999c19454.dir
+      size: 12686107
+      nfiles: 19
+    - path: src/cli.py
+      hash: md5
+      md5: 45a26211fb32bc3f99d25389c1f73270
+      size: 2979
+    - path: src/dataloader.py
+      hash: md5
+      md5: 08a9216dbe8b2ccc05b6920165dec022
+      size: 5119
+    - path: src/feature_generator.py
+      hash: md5
+      md5: af4fbf5d08c62aaa2bba151acc9fb571
+      size: 6344
+    - path: src/helper.py
+      hash: md5
+      md5: e29a304e914a2365fded32c794e716c3
+      size: 5659
+    - path: src/model.py
+      hash: md5
+      md5: 4b2c7ad48d998eda8b41d967cd579a8e
+      size: 1399
+    - path: src/trainer.py
+      hash: md5
+      md5: 47cff768c1662c57424ce2e3be3ca87e
+      size: 7811
+    - path: src/utils.py
+      hash: md5
+      md5: a07b1480b3d6be3e4b273a7cb0b93e09
+      size: 5737

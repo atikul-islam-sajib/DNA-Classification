@@ -1,3 +1,21 @@
 stages:
   train:
     cmd: python src/cli.py
+    
+    deps:              
+      - src/cli.py
+      - src/dataloader.py
+      - src/model.py
+      - src/feature_generator.py
+      - src/helper.py
+      - src/trainer.py
+      - src/utils.py
+      - ./data/
+      - ./config.yml/
+      - ./artifacts/
+
+    # outs:
+    #   - ./data/:
+    #     persist: true
+    #   - ./artifacts/:
+    #     persist: true
