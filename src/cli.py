@@ -74,7 +74,7 @@ def cli():
         help="K-Fold".capitalize(),
     )
 
-    args = parser.add_argument()
+    args = parser.parse_args()
 
     features_extraction = args.FE
     feature_selection = args.FS
@@ -94,7 +94,7 @@ def cli():
         exit(1)
 
     try:
-        splits_dataset = dataloader.split_dataset()
+        _ = dataloader.split_dataset()
     except Exception as e:
         print(f"Error in splitting the dataset: {e}")
         exit(1)
@@ -114,3 +114,7 @@ def cli():
     )
 
     trainer.train()
+
+
+if __name__ == "__main__":
+    cli()
