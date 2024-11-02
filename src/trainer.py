@@ -1,13 +1,9 @@
 import os
 import sys
-import math
 import json
 import argparse
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.metrics import (
     accuracy_score,
@@ -181,7 +177,39 @@ class Trainer:
 
 
 if __name__ == "__main__":
-    trainer = Trainer(
-        features_extraction=True, hyperparameter_tuning=False, model="RF", KFold=2
+    parser = argparse.ArgumentParser(
+        description="Train the model for DNA-Classification".title()
     )
+    parser.add_argument(
+        "--FE", type=bool, default=True, help="Features Extraction".capitalize()
+    )
+    parser.add_argument(
+        "--FS", type=bool, default=False, help="Feature Selection".capitalize()
+    )
+    parser.add_argument(
+        "--HP", type=bool, default=False, help="Hyperparameter Tuning".capitalize()
+    )
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="RF",
+        choices=["RF", "DT", "LR", "XGB", "NB"],
+        help="Model".capitalize(),
+    )
+
+    parser.add_argument("--KFold", type=int, default=5, help="K-Fold".capitalize())
+
+    args = parser.parse_args()
+
+    features_extraction = args.FE
+    feature_selection = args.FS
+
+    trainer = Trainer(
+        features_extraction=features_extraction,
+        features_selection=feature_selection,
+        hyperparameter_tuning=args.HP,
+        model=args.model,
+        KFold=args.KFold,
+    )
+
     trainer.train()

@@ -1,10 +1,10 @@
 path:
-  raw_path: "../data/raw/"
-  processed_path: "../data/processed/"
-  files_path: "../artifacts/files/"
+  raw_path: "./data/raw/"
+  processed_path: "./data/processed/"
+  files_path: "./artifacts/files/"
 
 dataloader:
-  dataset: "../data/raw/DNA-Classification.csv"
+  dataset: "./data/raw/DNA-Classification.csv"
   split_size: 0.20
   approaches: ["single", "di", "gc_content"] # There is another approach named "gc_content"
 
