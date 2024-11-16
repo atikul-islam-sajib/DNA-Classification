@@ -1,6 +1,17 @@
-# DNA Classification Task - CLI Tool
+# DNA Classification Task 
 
-This project provides a Command-Line Interface (CLI) tool for training and evaluating machine learning models for DNA classification tasks. It is a modular and configurable tool that allows users to preprocess datasets, extract features, perform feature selection, tune hyperparameters, and train models with K-Fold cross-validation.
+**DNA classification** is a computational and biological process used to categorize DNA sequences into predefined classes or groups based on specific characteristics, such as their genetic composition, structure, or origin. It can involve analyzing nucleotide sequences (A, T, C, G) and determining their relationship to known organisms, functional elements, or evolutionary traits.
+
+Classification can be done at different levels, such as:
+- **Taxonomic classification**: Assigning DNA sequences to species, genera, or higher taxonomic levels.
+- **Functional classification**: Identifying functional elements like genes, promoters, or regulatory sequences.
+- **Medical classification**: Grouping sequences based on their association with diseases or therapeutic targets.
+
+![DNA](https://assets.zilliz.com/1_a7469e9eac.png)
+
+---
+
+This project provides a tool for training and evaluating machine learning models for DNA classification tasks. It is a modular and configurable tool that allows users to preprocess datasets, extract features, perform feature selection, tune hyperparameters, and train models with K-Fold cross-validation.
 
 ---
 
