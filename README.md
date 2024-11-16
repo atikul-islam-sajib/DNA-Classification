@@ -147,12 +147,6 @@ python cli.py --dataset data/dna.csv --approaches single di tri tetra gc_content
 python cli.py --test
 ```
 
-### Use defaults from the `config.yml` file:
-
-```bash
-python cli.py
-```
-
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
