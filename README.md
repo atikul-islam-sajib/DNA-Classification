@@ -156,3 +156,5 @@ This project is licensed under the [MIT License](LICENSE).
 ## Notes
 
 For additional help, feel free to raise an issue on the project's repository or consult the source code for detailed implementation.
+
+UPDATE THE COMPONENETS SOON AND RELEASE THE VERSION SOON ...
