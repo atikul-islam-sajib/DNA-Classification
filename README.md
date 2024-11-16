@@ -63,8 +63,8 @@ This project provides a tool for training and evaluating machine learning models
 1. Clone the repository:
 
    ```bash
-   git clone <repository_url>
-   cd <repository_directory>
+   https://github.com/atikul-islam-sajib/DNA-Classification.git
+   cd DNA-Classification
    ```
 
 2. Install dependencies:
